@@ -22,6 +22,11 @@
     color: white;
     border: none;
     cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.searchButton:hover {
+    background-color: #45a045;
 }
 
 .usersContainer {
@@ -32,20 +37,23 @@
 }
 
 .pagination {
+    list-style-type: none; /* Remove default list styling */
     display: flex;
     justify-content: center;
-    gap: 8px; /* Adds consistent spacing between buttons */
+    gap: 10px; /* Adds consistent spacing between buttons */
     margin-top: 20px; /* Adds some spacing above the pagination */
+    align-items: center;
 }
 
 .paginationButton {
-    padding: 8px 14px; /* Increased padding for a larger clickable area */
-    margin: 0 5px;
+    padding: 8px 12px; /* Adjusted padding for a balanced clickable area */
+    margin: 0;
     background-color: #ffffff; /* White background for better contrast */
     border: 1px solid #ccc; /* Light border for distinction */
-    border-radius: 4px; /* Slightly rounded corners for a smoother look */
+    border-radius: 6px; /* Slightly rounded corners for a smoother look */
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s; /* Smooth transition for better interactivity */
+    min-width: 40px; /* Ensures consistent button size */
 }
 
 .paginationButton:hover {
@@ -72,6 +80,13 @@
     font-weight: bold; /* Bold text to emphasize the current page */
 }
 
+.paginationEllipsis {
+    padding: 8px;
+    color: #999; /* Lighter color for ellipsis */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
 .userIcon {
     width: 80px;
@@ -111,17 +126,4 @@
     padding: 10px;
     background-color: #f2f2f2;
     margin-bottom: 10px;
-}
-
-.pagination {
-    display: flex;
-    justify-content: center;
-}
-
-.paginationButton {
-    padding: 5px 10px;
-    margin: 0 5px;
-    background-color: #f2f2f2;
-    border: none;
-    cursor: pointer;
 }
