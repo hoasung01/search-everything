@@ -1,26 +1,43 @@
-import { use } from 'react';
+'use client';
+
+import { useState } from 'react';
 import styles from './page.module.css';
 import axios from 'axios';
 import { User } from './types';
-const fetchUsers = async (page = 1, perPage = 5): Promise<User[]> => {
-    const response = await axios.get('https://api.github.com/users', {
+const fetchUsers = async (query: string, page = 1, perPage = 5): Promise<User[]> => {
+    const response = await axios.get('https://api.github.com/search/users', {
         params: {
+            q: query,
             page,
             per_page: perPage,
         },
     });
-    return response.data;
+    return response.data.items;
 };
 
-
 const UsersPage = () => {
-    const users = use(fetchUsers());
+    const [query, setQuery] = useState('');
+    const [users, setUsers] = useState<User[]>([]);
+    const handleSearch = async () => {
+        if (query.trim() !== '') {
+            const searchedUsers = await fetchUsers(query);
+            setUsers(searchedUsers);
+        }
+    };
 
     return (
         <div className={styles.container}>
             <div className={styles.searchContainer}>
-                <input type="text" placeholder="Search Users..." className={styles.searchInput} />
-                <button className={styles.searchButton}>Search</button>
+                <input
+                    type="text"
+                    placeholder="Search Users..."
+                    className={styles.searchInput}
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                />
+                <button className={styles.searchButton} onClick={handleSearch}>
+                    Search
+                </button>
             </div>
 
             <div className={styles.usersContainer}>
