@@ -1,5 +1,5 @@
 'use client';
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useCallback} from 'react';
 import styles from './page.module.css';
 import { User } from './types';
 import IssueModal from '../../components/IssueModal';
@@ -7,6 +7,7 @@ import Pagination from '../../components/Pagination';
 import UserList from './components/UserList';
 import RepositoryList from './components/RepositoryList';
 import { useUsers } from '../hooks/useUsers';
+import { useRepositories } from '../hooks/useRepositories';
 
 import axios from 'axios';
 interface Issue {
@@ -30,10 +31,6 @@ const githubApi = axios.create({
 const UsersPage = () => {
     const [query, setQuery] = useState('');
     const perPage = 10;
-    const [selectedUser, setSelectedUser] = useState<User | null>(null);
-    const [repositories, setRepositories] = useState<any[]>([]);
-    const [reposPage, setReposPage] = useState(0);
-    const [totalRepos, setTotalRepos] = useState(0);
     const [selectedRepo, setSelectedRepo] = useState<string | null>(null);
     const [issues, setIssues] = useState<Issue[]>([]);
     const [isLoadingIssues, setIsLoadingIssues] = useState(false);
@@ -43,30 +40,10 @@ const UsersPage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | undefined>(undefined);
-    const reposPerPage = 5;
     const issuesPerPage = 5;
     const { users, totalCount, currentPage, setCurrentPage } = useUsers(query);
-    useEffect(() => {
-        const fetchRepositories = async () => {
-            if (selectedUser) {
-                try {
-                    const userResponse = await githubApi.get(`/users/${selectedUser.login}`);
-                    setTotalRepos(userResponse.data.public_repos);
-                    const reposResponse = await githubApi.get(`/users/${selectedUser.login}/repos`, {
-                        params: {
-                            page: reposPage + 1,
-                            per_page: reposPerPage,
-                        },
-                    });
-                    setRepositories(reposResponse.data);
-                } catch (error) {
-                    console.error('Error fetching repositories:', error);
-                }
-            }
-        };
-        fetchRepositories();
-    }, [selectedUser, reposPage]);
-
+    const [selectedUser, setSelectedUser] = useState<User | null>(null);
+    const { repositories, reposPage, setReposPage, reposPageCount } = useRepositories(selectedUser);
     const fetchIssues = useCallback(async () => {
         if (selectedUser && selectedRepo) {
             setIsLoadingIssues(true);
@@ -145,7 +122,6 @@ const UsersPage = () => {
         return new Date(dateString).toLocaleDateString();
     };
     const pageCount = Math.ceil(totalCount / perPage);
-    const reposPageCount = Math.ceil(totalRepos / reposPerPage);
     const issuesPageCount = Math.ceil(totalIssues / issuesPerPage);
     return (
         <div className={styles.container}>
