@@ -8,23 +8,24 @@ import { fetchUsers } from './fetchUsers';
 import axios from 'axios';
 
 const UsersPage = () => {
-    const [currentPage, setCurrentPage] = useState(0); // `react-paginate` uses zero-based indexing
-    const [query, setQuery] = useState(''); // State for search query
+    const [currentPage, setCurrentPage] = useState(0);
+    const [query, setQuery] = useState('');
     const perPage = 10;
 
     const [users, setUsers] = useState<User[]>([]);
     const [totalCount, setTotalCount] = useState(0);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
-    const [repositories, setRepositories] = useState([]);
+    const [repositories, setRepositories] = useState<any[]>([]);
     const [reposPage, setReposPage] = useState(0);
+    const [totalRepos, setTotalRepos] = useState(0);
     const reposPerPage = 5;
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const { users, totalCount } = await fetchUsers(query, currentPage + 1, perPage); // Adjust page for backend
+                const { users, totalCount } = await fetchUsers(query, currentPage + 1, perPage);
                 setUsers(users);
-                setTotalCount(Math.min(totalCount, 1000)); // Limit total count to 1000 due to GitHub API limitation
+                setTotalCount(Math.min(totalCount, 1000));
             } catch (error) {
                 console.error('Error fetching users:', error);
             }
@@ -36,13 +37,18 @@ const UsersPage = () => {
         const fetchRepositories = async () => {
             if (selectedUser) {
                 try {
-                    const response = await axios.get(`https://api.github.com/users/${selectedUser.login}/repos`, {
+                    // First, fetch user data to get total repository count
+                    const userResponse = await axios.get(`https://api.github.com/users/${selectedUser.login}`);
+                    setTotalRepos(userResponse.data.public_repos);
+
+                    // Then fetch repositories for the current page
+                    const reposResponse = await axios.get(`https://api.github.com/users/${selectedUser.login}/repos`, {
                         params: {
                             page: reposPage + 1,
                             per_page: reposPerPage,
                         },
                     });
-                    setRepositories(response.data);
+                    setRepositories(reposResponse.data);
                 } catch (error) {
                     console.error('Error fetching repositories:', error);
                 }
@@ -60,20 +66,20 @@ const UsersPage = () => {
     };
 
     const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault(); // Prevent form from refreshing the page
+        event.preventDefault();
         const formData = new FormData(event.currentTarget);
         const searchQuery = formData.get('query') as string;
         setQuery(searchQuery);
-        setCurrentPage(0); // Reset to first page when performing a new search
+        setCurrentPage(0);
     };
 
     const handleUserClick = (user: User) => {
         setSelectedUser(user);
-        setReposPage(0); // Reset repositories page to the first page
+        setReposPage(0);
     };
 
     const pageCount = Math.ceil(totalCount / perPage);
-    const reposPageCount = Math.ceil(repositories.length / reposPerPage);
+    const reposPageCount = Math.ceil(totalRepos / reposPerPage);
 
     return (
         <div className={styles.container}>
@@ -91,7 +97,11 @@ const UsersPage = () => {
 
             <div className={styles.usersContainer}>
                 {users.map((user: User) => (
-                    <div key={user.id} className={styles.userIcon} onClick={() => handleUserClick(user)}>
+                    <div
+                        key={user.id}
+                        className={`${styles.userIcon} ${selectedUser?.id === user.id ? styles.selected : ''}`}
+                        onClick={() => handleUserClick(user)}
+                    >
                         <img
                             src={user.avatar_url}
                             alt={user.login}
@@ -104,54 +114,84 @@ const UsersPage = () => {
 
             {selectedUser && (
                 <div className={styles.repositoriesContainer}>
-                    <ul>
-                        {repositories.map((repo: any) => (
-                            <li key={repo.id} className={styles.repositoryItem}>
-                                <a href={repo.html_url} target="_blank" rel="noopener noreferrer">
-                                    {repo.name}
-                                </a>
-                            </li>
-                        ))}
-                    </ul>
-                    {reposPageCount > 1 && (
-                        <ReactPaginate
-                            previousLabel={'Previous'}
-                            nextLabel={'Next'}
-                            breakLabel={'...'}
-                            pageCount={reposPageCount}
-                            marginPagesDisplayed={2}
-                            pageRangeDisplayed={3}
-                            onPageChange={handleReposPageClick}
-                            forcePage={reposPage}
-                            containerClassName={styles.pagination}
-                            pageClassName={styles.paginationButton}
-                            activeClassName={styles.active}
-                            previousClassName={styles.paginationButton}
-                            nextClassName={styles.paginationButton}
-                            disabledClassName={styles.disabled}
-                        />
+                    <h3>Repositories for {selectedUser.login}</h3>
+                    {repositories.length > 0 ? (
+                        <>
+                            <ul className={styles.repositoryList}>
+                                {repositories.map((repo: any) => (
+                                    <li key={repo.id} className={styles.repositoryItem}>
+                                        <a
+                                            href={repo.html_url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className={styles.repositoryLink}
+                                        >
+                                            {repo.name}
+                                        </a>
+                                        {repo.description && (
+                                            <p className={styles.repositoryDescription}>
+                                                {repo.description}
+                                            </p>
+                                        )}
+                                    </li>
+                                ))}
+                            </ul>
+                            {reposPageCount > 1 && (
+                                <div className={styles.paginationWrapper}>
+                                    <ReactPaginate
+                                        previousLabel={'←'}
+                                        nextLabel={'→'}
+                                        breakLabel={'...'}
+                                        pageCount={reposPageCount}
+                                        marginPagesDisplayed={2}
+                                        pageRangeDisplayed={3}
+                                        onPageChange={handleReposPageClick}
+                                        forcePage={reposPage}
+                                        containerClassName={styles.paginationContainer}
+                                        pageClassName={styles.paginationItem}
+                                        pageLinkClassName={styles.paginationLink}
+                                        previousClassName={styles.paginationItem}
+                                        previousLinkClassName={styles.paginationLink}
+                                        nextClassName={styles.paginationItem}
+                                        nextLinkClassName={styles.paginationLink}
+                                        breakClassName={styles.paginationItem}
+                                        breakLinkClassName={styles.paginationLink}
+                                        activeClassName={styles.paginationActive}
+                                        disabledClassName={styles.paginationDisabled}
+                                    />
+                                </div>
+                            )}
+                        </>
+                    ) : (
+                        <p>No repositories found</p>
                     )}
                 </div>
             )}
 
-            {/* Pagination using react-paginate */}
             {pageCount > 1 && (
-                <ReactPaginate
-                    previousLabel={'Previous'}
-                    nextLabel={'Next'}
-                    breakLabel={'...'}
-                    pageCount={pageCount}
-                    marginPagesDisplayed={2}
-                    pageRangeDisplayed={3}
-                    onPageChange={handlePageClick}
-                    forcePage={currentPage}
-                    containerClassName={styles.pagination}
-                    pageClassName={styles.paginationButton}
-                    activeClassName={styles.active}
-                    previousClassName={styles.paginationButton}
-                    nextClassName={styles.paginationButton}
-                    disabledClassName={styles.disabled}
-                />
+                <div className={styles.paginationWrapper}>
+                    <ReactPaginate
+                        previousLabel={'←'}
+                        nextLabel={'→'}
+                        breakLabel={'...'}
+                        pageCount={pageCount}
+                        marginPagesDisplayed={2}
+                        pageRangeDisplayed={3}
+                        onPageChange={handlePageClick}
+                        forcePage={currentPage}
+                        containerClassName={styles.paginationContainer}
+                        pageClassName={styles.paginationItem}
+                        pageLinkClassName={styles.paginationLink}
+                        previousClassName={styles.paginationItem}
+                        previousLinkClassName={styles.paginationLink}
+                        nextClassName={styles.paginationItem}
+                        nextLinkClassName={styles.paginationLink}
+                        breakClassName={styles.paginationItem}
+                        breakLinkClassName={styles.paginationLink}
+                        activeClassName={styles.paginationActive}
+                        disabledClassName={styles.paginationDisabled}
+                    />
+                </div>
             )}
         </div>
     );

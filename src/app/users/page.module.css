@@ -4,6 +4,7 @@
     padding: 20px;
 }
 
+/* Search Styles */
 .searchContainer {
     display: flex;
     margin-bottom: 20px;
@@ -29,63 +30,12 @@
     background-color: #45a045;
 }
 
+/* Users Container Styles */
 .usersContainer {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
     margin-bottom: 20px;
-}
-
-.pagination {
-    list-style-type: none; /* Remove default list styling */
-    display: flex;
-    justify-content: center;
-    gap: 10px; /* Adds consistent spacing between buttons */
-    margin-top: 20px; /* Adds some spacing above the pagination */
-    align-items: center;
-}
-
-.paginationButton {
-    padding: 8px 12px; /* Adjusted padding for a balanced clickable area */
-    margin: 0;
-    background-color: #ffffff; /* White background for better contrast */
-    border: 1px solid #ccc; /* Light border for distinction */
-    border-radius: 6px; /* Slightly rounded corners for a smoother look */
-    cursor: pointer;
-    transition: background-color 0.3s, color 0.3s; /* Smooth transition for better interactivity */
-    min-width: 40px; /* Ensures consistent button size */
-}
-
-.paginationButton:hover {
-    background-color: #4caf50; /* Green background on hover */
-    color: #ffffff; /* White text on hover for contrast */
-}
-
-.paginationButton:active {
-    background-color: #388e3c; /* Darker green when button is pressed */
-    color: #ffffff;
-}
-
-.paginationButton.disabled {
-    background-color: #f2f2f2; /* Gray background for disabled state */
-    color: #999; /* Gray text for disabled state */
-    cursor: not-allowed; /* Change cursor to indicate non-clickable */
-    border: 1px solid #ddd; /* Subtle border to indicate disabled state */
-}
-
-.paginationButton.active {
-    background-color: #4caf50; /* Green background for active page */
-    color: #ffffff; /* White text for better readability */
-    border: 1px solid #4caf50; /* Border to highlight the active button */
-    font-weight: bold; /* Bold text to emphasize the current page */
-}
-
-.paginationEllipsis {
-    padding: 8px;
-    color: #999; /* Lighter color for ellipsis */
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .userIcon {
@@ -118,34 +68,110 @@
     word-break: break-all;
 }
 
+/* Repositories Styles */
 .repositoriesContainer {
     padding: 20px;
-    background-color: #f9f9f9; /* Light background for better contrast */
+    background-color: #f9f9f9;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.repositoriesList {
-    list-style-type: none; /* Remove default list styling */
+.repositoryList {
+    list-style: none;
     padding: 0;
+    margin: 0;
 }
 
 .repositoryItem {
-    padding: 15px;
+    padding: 12px;
     margin-bottom: 10px;
-    background-color: #ffffff; /* White background for repository items */
-    border: 1px solid #e0e0e0; /* Light border */
-    border-radius: 4px; /* Rounded corners for a polished look */
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
     transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
-.repositoryItem a {
-    color: #333;
-    text-decoration: none;
-    font-weight: bold;
+.repositoryItem:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
 }
 
 .repositoryItem:hover {
-    background-color: #f1f1f1; /* Slight highlight on hover */
-    transform: translateY(-2px); /* Lift effect on hover */
+    background-color: #f1f1f1;
+    transform: translateY(-2px);
+}
+
+.repositoryLink {
+    color: #4299e1;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.repositoryDescription {
+    color: #718096;
+    font-size: 0.875rem;
+    margin-top: 4px;
+}
+
+/* Pagination Styles */
+.paginationWrapper {
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+}
+
+.paginationContainer {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: 5px;
+}
+
+.paginationItem {
+    margin: 0;
+    padding: 0;
+}
+
+.paginationLink {
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    color: #4a5568;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+    min-width: 40px;
+    text-align: center;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.paginationLink:hover {
+    background-color: #4caf50;
+    color: #ffffff;
+}
+
+.paginationActive {
+    background-color: #4caf50;
+    border-color: #4caf50;
+}
+
+.paginationActive .paginationLink {
+    color: white;
+    border-color: transparent;
+}
+
+.paginationDisabled .paginationLink {
+    background-color: #f2f2f2;
+    color: #cbd5e0;
+    cursor: not-allowed;
+    border-color: #ddd;
+}
+
+.paginationEllipsis {
+    padding: 8px;
+    color: #999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
