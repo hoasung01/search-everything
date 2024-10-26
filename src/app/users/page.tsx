@@ -6,6 +6,7 @@ import { User } from './types';
 import { fetchUsers } from './fetchUsers';
 import IssueModal from '../../components/IssueModal';
 import Pagination from '../../components/Pagination';
+import UserList from './components/UserList';
 import axios from 'axios';
 interface Issue {
     id: number;
@@ -174,22 +175,7 @@ const UsersPage = () => {
                     Search
                 </button>
             </form>
-            <div className={styles.usersContainer}>
-                {users.map((user: User) => (
-                    <div
-                        key={user.id}
-                        className={`${styles.userIcon} ${selectedUser?.id === user.id ? styles.selected : ''}`}
-                        onClick={() => handleUserClick(user)}
-                    >
-                        <img
-                            src={user.avatar_url}
-                            alt={user.login}
-                            className={styles.userAvatar}
-                        />
-                        <span className={styles.userName}>{user.login}</span>
-                    </div>
-                ))}
-            </div>
+            <UserList users={users} selectedUser={selectedUser} onUserClick={handleUserClick} />
             {selectedUser && (
                 <div className={styles.repositoriesContainer}>
                     <h3>Repositories for {selectedUser.login}</h3>

@@ -1,0 +1,45 @@
+.usersContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.userIcon {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 8px;
+    transition: all 0.2s ease-in-out;
+}
+
+.userIcon:hover {
+    background-color: #f0f9ff;
+    transform: translateY(-2px);
+}
+
+.userIcon.selected {
+    background-color: #e8f5e9;
+    border: 2px solid #4caf50;
+}
+
+.userAvatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 8px;
+}
+
+.userName {
+    font-size: 14px;
+    text-align: center;
+    word-break: break-word;
+    max-width: 90px;
+    color: #2d3748;
+}
