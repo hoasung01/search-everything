@@ -48,7 +48,7 @@ const UsersPage = () => {
     const [newIssueTitle, setNewIssueTitle] = useState('');
     const [newIssueBody, setNewIssueBody] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState<string | undefined>(undefined);
     const reposPerPage = 5;
     const issuesPerPage = 5;
     useEffect(() => {
