@@ -1,9 +1,7 @@
 'use client';
 import React, {useState, useEffect, useCallback} from 'react';
-import ReactPaginate from 'react-paginate';
 import styles from './page.module.css';
 import { User } from './types';
-import { fetchUsers } from './fetchUsers';
 import IssueModal from '../../components/IssueModal';
 import Pagination from '../../components/Pagination';
 import UserList from './components/UserList';
