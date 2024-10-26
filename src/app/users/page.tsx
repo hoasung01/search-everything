@@ -8,6 +8,7 @@ import IssueModal from '../../components/IssueModal';
 import Pagination from '../../components/Pagination';
 import UserList from './components/UserList';
 import RepositoryList from './components/RepositoryList';
+import { useUsers } from '../hooks/useUsers';
 
 import axios from 'axios';
 interface Issue {
@@ -29,11 +30,8 @@ const githubApi = axios.create({
 });
 
 const UsersPage = () => {
-    const [currentPage, setCurrentPage] = useState(0);
     const [query, setQuery] = useState('');
     const perPage = 10;
-    const [users, setUsers] = useState<User[]>([]);
-    const [totalCount, setTotalCount] = useState(0);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const [repositories, setRepositories] = useState<any[]>([]);
     const [reposPage, setReposPage] = useState(0);
@@ -49,18 +47,7 @@ const UsersPage = () => {
     const [error, setError] = useState<string | undefined>(undefined);
     const reposPerPage = 5;
     const issuesPerPage = 5;
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const { users, totalCount } = await fetchUsers(query, currentPage + 1, perPage);
-                setUsers(users);
-                setTotalCount(Math.min(totalCount, 1000));
-            } catch (error) {
-                console.error('Error fetching users:', error);
-            }
-        };
-        fetchData();
-    }, [currentPage, query]);
+    const { users, totalCount, currentPage, setCurrentPage } = useUsers(query);
     useEffect(() => {
         const fetchRepositories = async () => {
             if (selectedUser) {
