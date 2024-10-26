@@ -119,11 +119,33 @@
 }
 
 .repositoriesContainer {
-    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #f9f9f9; /* Light background for better contrast */
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.repositoriesList {
+    list-style-type: none; /* Remove default list styling */
+    padding: 0;
 }
 
 .repositoryItem {
-    padding: 10px;
-    background-color: #f2f2f2;
+    padding: 15px;
     margin-bottom: 10px;
+    background-color: #ffffff; /* White background for repository items */
+    border: 1px solid #e0e0e0; /* Light border */
+    border-radius: 4px; /* Rounded corners for a polished look */
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.repositoryItem a {
+    color: #333;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.repositoryItem:hover {
+    background-color: #f1f1f1; /* Slight highlight on hover */
+    transform: translateY(-2px); /* Lift effect on hover */
 }
