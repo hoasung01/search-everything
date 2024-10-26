@@ -1,6 +1,21 @@
+import { use } from 'react';
 import styles from './page.module.css';
+import axios from 'axios';
+import { User } from './types';
+const fetchUsers = async (page = 1, perPage = 5): Promise<User[]> => {
+    const response = await axios.get('https://api.github.com/users', {
+        params: {
+            page,
+            per_page: perPage,
+        },
+    });
+    return response.data;
+};
+
 
 const UsersPage = () => {
+    const users = use(fetchUsers());
+
     return (
         <div className={styles.container}>
             <div className={styles.searchContainer}>
@@ -9,11 +24,12 @@ const UsersPage = () => {
             </div>
 
             <div className={styles.usersContainer}>
-                <div className={styles.userIcon}>1</div>
-                <div className={styles.userIcon}>2</div>
-                <div className={styles.userIcon}>3</div>
-                <div className={styles.userIcon}>4</div>
-                <div className={styles.userIcon}>5</div>
+                {users.map((user: User) => (
+                    <div key={user.id} className={styles.userIcon}>
+                        <img src={user.avatar_url} alt={user.login} className={styles.userAvatar} />
+                        <span className={styles.userName}>{user.login}</span>
+                    </div>
+                ))}
             </div>
 
             <div className={styles.repositoriesContainer}>
