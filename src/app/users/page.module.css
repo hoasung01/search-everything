@@ -53,74 +53,6 @@
     align-items: center;
 }
 
-/* Repositories Container */
-.repositoriesContainer {
-    background-color: #fff;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.repositoriesContainer h3 {
-    margin: 0 0 20px 0;
-    color: #2d3748;
-    font-size: 1.25rem;
-}
-
-.repositoryList {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.repositoryItem {
-    padding: 16px;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    margin-bottom: 12px;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-}
-
-.repositoryItem:hover {
-    background-color: #f8fafc;
-    border-color: #4caf50;
-}
-
-.repositoryItem.selectedRepo {
-    background-color: #f0f9ff;
-    border-left: 4px solid #4caf50;
-}
-
-.repositoryHeader {
-    @extend .flex-space-between;
-    margin-bottom: 8px;
-}
-
-.repositoryLink {
-    color: #2c5282;
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 1.1rem;
-}
-
-.repositoryLink:hover {
-    text-decoration: underline;
-}
-
-.repositoryStats, .issueFooter {
-    display: flex;
-    gap: 12px;
-    color: #718096;
-    font-size: 0.875rem;
-}
-
-.repositoryDescription {
-    color: #718096;
-    font-size: 0.875rem;
-    margin-top: 8px;
-}
-
 /* Issues Container */
 .issuesContainer {
     margin-top: 16px;
@@ -185,59 +117,6 @@
     border-radius: 6px;
 }
 
-/* Pagination */
-.paginationWrapper {
-    margin: 20px 0;
-    @extend .flex-center;
-}
-
-.paginationContainer {
-    display: flex;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    gap: 4px;
-}
-
-.paginationItem {
-    margin: 0;
-}
-
-.paginationLink, .paginationActive .paginationLink, .paginationDisabled .paginationLink {
-    padding: 8px 12px;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 32px;
-    text-decoration: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.paginationLink {
-    color: #4a5568;
-    border: 1px solid #e2e8f0;
-}
-
-.paginationLink:hover {
-    background-color: #4caf50;
-    border-color: #4caf50;
-    color: white;
-}
-
-.paginationActive .paginationLink {
-    background-color: #4caf50;
-    border-color: #4caf50;
-    color: white;
-}
-
-.paginationDisabled .paginationLink {
-    background-color: #f7fafc;
-    color: #cbd5e0;
-    cursor: not-allowed;
-    border-color: #e2e8f0;
-}
 
 /* Responsive Design */
 @media (max-width: 640px) {
@@ -249,7 +128,7 @@
         flex-direction: column;
     }
 
-    .repositoryHeader, .issueFooter {
+    .issueFooter {
         flex-direction: column;
         align-items: flex-start;
         gap: 8px;
