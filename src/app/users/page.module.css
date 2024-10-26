@@ -40,6 +40,19 @@
     background-color: #45a045;
 }
 
+/* Flex Containers */
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flex-space-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 /* Users Container */
 .usersContainer {
     display: flex;
@@ -127,9 +140,7 @@
 }
 
 .repositoryHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    @extend .flex-space-between;
     margin-bottom: 8px;
 }
 
@@ -144,7 +155,7 @@
     text-decoration: underline;
 }
 
-.repositoryStats {
+.repositoryStats, .issueFooter {
     display: flex;
     gap: 12px;
     color: #718096;
@@ -154,7 +165,7 @@
 .repositoryDescription {
     color: #718096;
     font-size: 0.875rem;
-    margin: 8px 0 0 0;
+    margin-top: 8px;
 }
 
 /* Issues Container */
@@ -162,6 +173,7 @@
     margin-top: 16px;
     padding-top: 16px;
     border-top: 1px solid #e2e8f0;
+    animation: fadeIn 0.3s ease-in-out;
 }
 
 .issuesContainer h4 {
@@ -203,29 +215,19 @@
     text-decoration: underline;
 }
 
-.issueFooter {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.875rem;
-}
-
 .issueDate {
     color: #718096;
     font-size: 0.75rem;
 }
 
 /* Loading and Empty States */
-.loading {
+.loading, .noIssues {
     text-align: center;
     padding: 20px;
     color: #718096;
 }
 
 .noIssues {
-    text-align: center;
-    padding: 20px;
-    color: #718096;
     background-color: #f7fafc;
     border-radius: 6px;
 }
@@ -233,8 +235,7 @@
 /* Pagination */
 .paginationWrapper {
     margin: 20px 0;
-    display: flex;
-    justify-content: center;
+    @extend .flex-center;
 }
 
 .paginationContainer {
@@ -249,18 +250,21 @@
     margin: 0;
 }
 
-.paginationLink {
+.paginationLink, .paginationActive .paginationLink, .paginationDisabled .paginationLink {
     padding: 8px 12px;
-    border: 1px solid #e2e8f0;
     border-radius: 6px;
-    color: #4a5568;
-    cursor: pointer;
-    text-decoration: none;
     display: flex;
     align-items: center;
     justify-content: center;
     min-width: 32px;
+    text-decoration: none;
+    cursor: pointer;
     transition: all 0.2s ease;
+}
+
+.paginationLink {
+    color: #4a5568;
+    border: 1px solid #e2e8f0;
 }
 
 .paginationLink:hover {
@@ -269,12 +273,9 @@
     color: white;
 }
 
-.paginationActive {
+.paginationActive .paginationLink {
     background-color: #4caf50;
     border-color: #4caf50;
-}
-
-.paginationActive .paginationLink {
     color: white;
 }
 
@@ -295,20 +296,10 @@
         flex-direction: column;
     }
 
-    .repositoryHeader {
+    .repositoryHeader, .issueFooter {
         flex-direction: column;
         align-items: flex-start;
         gap: 8px;
-    }
-
-    .repositoryStats {
-        flex-wrap: wrap;
-    }
-
-    .issueFooter {
-        flex-direction: column;
-        gap: 4px;
-        align-items: flex-start;
     }
 
     .paginationLink {
@@ -327,10 +318,6 @@
         opacity: 1;
         transform: translateY(0);
     }
-}
-
-.issuesContainer {
-    animation: fadeIn 0.3s ease-in-out;
 }
 
 /* State Colors */
@@ -363,19 +350,17 @@
     font-size: 1rem;
     transition: all 0.2s ease;
     background-color: #f8fafc;
-    color: black; /* Set a dark color for the font */
+    color: black;
 }
 
 .input:hover, .textarea:hover {
     border-color: #cbd5e0;
-    /*background-color: white;*/
-    color: black; /* Ensure font color remains consistent on hover */
+    color: black;
 }
 
 .input:focus, .textarea:focus {
     outline: none;
     border-color: #4caf50;
-    /*background-color: white;*/
     box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
-    color: black; /* Ensure font color remains consistent on focus */
+    color: black;
 }

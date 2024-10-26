@@ -5,6 +5,7 @@ import styles from './page.module.css';
 import { User } from './types';
 import { fetchUsers } from './fetchUsers';
 import IssueModal from '../../components/IssueModal';
+import Pagination from '../../components/Pagination';
 import axios from 'axios';
 interface Issue {
     id: number;
@@ -264,29 +265,11 @@ const UsersPage = () => {
                                                             ))}
                                                         </ul>
                                                         {issuesPageCount > 1 && (
-                                                            <div className={styles.paginationWrapper}>
-                                                                <ReactPaginate
-                                                                    previousLabel={'←'}
-                                                                    nextLabel={'→'}
-                                                                    breakLabel={'...'}
-                                                                    pageCount={issuesPageCount}
-                                                                    marginPagesDisplayed={2}
-                                                                    pageRangeDisplayed={3}
-                                                                    onPageChange={handleIssuesPageClick}
-                                                                    forcePage={issuesPage}
-                                                                    containerClassName={styles.paginationContainer}
-                                                                    pageClassName={styles.paginationItem}
-                                                                    pageLinkClassName={styles.paginationLink}
-                                                                    previousClassName={styles.paginationItem}
-                                                                    previousLinkClassName={styles.paginationLink}
-                                                                    nextClassName={styles.paginationItem}
-                                                                    nextLinkClassName={styles.paginationLink}
-                                                                    breakClassName={styles.paginationItem}
-                                                                    breakLinkClassName={styles.paginationLink}
-                                                                    activeClassName={styles.paginationActive}
-                                                                    disabledClassName={styles.paginationDisabled}
-                                                                />
-                                                            </div>
+                                                            <Pagination
+                                                                pageCount={issuesPageCount}
+                                                                onPageChange={handleIssuesPageClick}
+                                                                forcePage={issuesPage}
+                                                            />
                                                         )}
                                                     </>
                                                 ) : (
@@ -298,29 +281,11 @@ const UsersPage = () => {
                                 ))}
                             </ul>
                             {reposPageCount > 1 && (
-                                <div className={styles.paginationWrapper}>
-                                    <ReactPaginate
-                                        previousLabel={'←'}
-                                        nextLabel={'→'}
-                                        breakLabel={'...'}
-                                        pageCount={reposPageCount}
-                                        marginPagesDisplayed={2}
-                                        pageRangeDisplayed={3}
-                                        onPageChange={handleReposPageClick}
-                                        forcePage={reposPage}
-                                        containerClassName={styles.paginationContainer}
-                                        pageClassName={styles.paginationItem}
-                                        pageLinkClassName={styles.paginationLink}
-                                        previousClassName={styles.paginationItem}
-                                        previousLinkClassName={styles.paginationLink}
-                                        nextClassName={styles.paginationItem}
-                                        nextLinkClassName={styles.paginationLink}
-                                        breakClassName={styles.paginationItem}
-                                        breakLinkClassName={styles.paginationLink}
-                                        activeClassName={styles.paginationActive}
-                                        disabledClassName={styles.paginationDisabled}
-                                    />
-                                </div>
+                                <Pagination
+                                    pageCount={reposPageCount}
+                                    onPageChange={handleReposPageClick}
+                                    forcePage={reposPage}
+                                />
                             )}
                         </>
                     ) : (
@@ -329,29 +294,11 @@ const UsersPage = () => {
                 </div>
             )}
             {pageCount > 1 && (
-                <div className={styles.paginationWrapper}>
-                    <ReactPaginate
-                        previousLabel={'←'}
-                        nextLabel={'→'}
-                        breakLabel={'...'}
-                        pageCount={pageCount}
-                        marginPagesDisplayed={2}
-                        pageRangeDisplayed={3}
-                        onPageChange={handlePageClick}
-                        forcePage={currentPage}
-                        containerClassName={styles.paginationContainer}
-                        pageClassName={styles.paginationItem}
-                        pageLinkClassName={styles.paginationLink}
-                        previousClassName={styles.paginationItem}
-                        previousLinkClassName={styles.paginationLink}
-                        nextClassName={styles.paginationItem}
-                        nextLinkClassName={styles.paginationLink}
-                        breakClassName={styles.paginationItem}
-                        breakLinkClassName={styles.paginationLink}
-                        activeClassName={styles.paginationActive}
-                        disabledClassName={styles.paginationDisabled}
-                    />
-                </div>
+                <Pagination
+                    pageCount={pageCount}
+                    onPageChange={handlePageClick}
+                    forcePage={currentPage}
+                />
             )}
         </div>
     );
