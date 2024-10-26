@@ -1,76 +1,85 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import ReactPaginate from 'react-paginate';
 import styles from './page.module.css';
-import axios from 'axios';
 import { User } from './types';
-const fetchUsers = async (query: string, page = 1, perPage = 5): Promise<User[]> => {
-    const response = await axios.get('https://api.github.com/search/users', {
-        params: {
-            q: query,
-            page,
-            per_page: perPage,
-        },
-    });
-    return response.data.items;
-};
+import { fetchUsers } from './fetchUsers';
 
 const UsersPage = () => {
-    const [query, setQuery] = useState('');
+    const [currentPage, setCurrentPage] = useState(0); // `react-paginate` uses zero-based indexing
+    const [query, setQuery] = useState(''); // State for search query
+    const perPage = 5;
+
     const [users, setUsers] = useState<User[]>([]);
-    const handleSearch = async () => {
-        if (query.trim() !== '') {
-            const searchedUsers = await fetchUsers(query);
-            setUsers(searchedUsers);
-        }
+    const [totalCount, setTotalCount] = useState(0);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const { users, totalCount } = await fetchUsers(query, currentPage + 1, perPage); // Adjust page for backend
+            setUsers(users);
+            setTotalCount(totalCount);
+        };
+        fetchData();
+    }, [currentPage, query]);
+
+    const handlePageClick = (selectedItem: { selected: number }) => {
+        setCurrentPage(selectedItem.selected);
     };
+
+    const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault(); // Prevent form from refreshing the page
+        const formData = new FormData(event.currentTarget);
+        const searchQuery = formData.get('query') as string;
+        setQuery(searchQuery);
+        setCurrentPage(0); // Reset to first page when performing a new search
+    };
+
+    const pageCount = Math.ceil(totalCount / perPage);
 
     return (
         <div className={styles.container}>
-            <div className={styles.searchContainer}>
+            <form className={styles.searchContainer} onSubmit={handleSearchSubmit}>
                 <input
                     type="text"
+                    name="query"
                     placeholder="Search Users..."
                     className={styles.searchInput}
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
                 />
-                <button className={styles.searchButton} onClick={handleSearch}>
+                <button type="submit" className={styles.searchButton}>
                     Search
                 </button>
-            </div>
+            </form>
 
             <div className={styles.usersContainer}>
                 {users.map((user: User) => (
                     <div key={user.id} className={styles.userIcon}>
-                        <img src={user.avatar_url} alt={user.login} className={styles.userAvatar} />
+                        <img
+                            src={user.avatar_url}
+                            alt={user.login}
+                            className={styles.userAvatar}
+                        />
                         <span className={styles.userName}>{user.login}</span>
                     </div>
                 ))}
             </div>
 
-            <div className={styles.repositoriesContainer}>
-                <div className={styles.repositoryItem}>Repository 1 (143 stars / 85 watching)</div>
-                <div className={styles.repositoryItem}>Repository 2 (143 stars / 85 watching)</div>
-                <div className={styles.repositoryItem}>Repository 3 (143 stars / 85 watching)</div>
-                <div className={styles.repositoryItem}>Repository 4 (143 stars / 85 watching)</div>
-                <div className={styles.repositoryItem}>Repository 5 (143 stars / 85 watching)</div>
-                <div className={styles.repositoryItem}>Repository 6 (143 stars / 85 watching)</div>
-            </div>
-
-            <div className={styles.pagination}>
-                <button className={styles.paginationButton}>&lt;</button>
-                <button className={styles.paginationButton}>1</button>
-                <button className={styles.paginationButton}>2</button>
-                <button className={styles.paginationButton}>3</button>
-                <button className={styles.paginationButton}>4</button>
-                <button className={styles.paginationButton}>5</button>
-                <button className={styles.paginationButton}>6</button>
-                <button className={styles.paginationButton}>7</button>
-                <button className={styles.paginationButton}>8</button>
-                <button className={styles.paginationButton}>9</button>
-                <button className={styles.paginationButton}>&gt;</button>
-            </div>
+            {/* Pagination using react-paginate */}
+            <ReactPaginate
+                previousLabel={'Previous'}
+                nextLabel={'Next'}
+                breakLabel={'...'}
+                pageCount={pageCount}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={3}
+                onPageChange={handlePageClick}
+                containerClassName={styles.pagination}
+                pageClassName={styles.paginationButton}
+                activeClassName={styles.active}
+                previousClassName={styles.paginationButton}
+                nextClassName={styles.paginationButton}
+                disabledClassName={styles.disabled}
+            />
         </div>
     );
 };

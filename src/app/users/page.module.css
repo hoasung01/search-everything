@@ -31,6 +31,48 @@
     margin-bottom: 20px;
 }
 
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 8px; /* Adds consistent spacing between buttons */
+    margin-top: 20px; /* Adds some spacing above the pagination */
+}
+
+.paginationButton {
+    padding: 8px 14px; /* Increased padding for a larger clickable area */
+    margin: 0 5px;
+    background-color: #ffffff; /* White background for better contrast */
+    border: 1px solid #ccc; /* Light border for distinction */
+    border-radius: 4px; /* Slightly rounded corners for a smoother look */
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition for better interactivity */
+}
+
+.paginationButton:hover {
+    background-color: #4caf50; /* Green background on hover */
+    color: #ffffff; /* White text on hover for contrast */
+}
+
+.paginationButton:active {
+    background-color: #388e3c; /* Darker green when button is pressed */
+    color: #ffffff;
+}
+
+.paginationButton.disabled {
+    background-color: #f2f2f2; /* Gray background for disabled state */
+    color: #999; /* Gray text for disabled state */
+    cursor: not-allowed; /* Change cursor to indicate non-clickable */
+    border: 1px solid #ddd; /* Subtle border to indicate disabled state */
+}
+
+.paginationButton.active {
+    background-color: #4caf50; /* Green background for active page */
+    color: #ffffff; /* White text for better readability */
+    border: 1px solid #4caf50; /* Border to highlight the active button */
+    font-weight: bold; /* Bold text to emphasize the current page */
+}
+
+
 .userIcon {
     width: 80px;
     height: 80px;
