@@ -142,7 +142,7 @@ const UsersPage = () => {
     const handleCreateIssue = async (title: string, body: string) => {
         if (!selectedUser || !selectedRepo) return;
         setIsSubmitting(true);
-        setError(null);
+        setError(undefined);
 
         try {
             await githubApi.post(
