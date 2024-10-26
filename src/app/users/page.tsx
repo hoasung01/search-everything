@@ -9,16 +9,20 @@ import { fetchUsers } from './fetchUsers';
 const UsersPage = () => {
     const [currentPage, setCurrentPage] = useState(0); // `react-paginate` uses zero-based indexing
     const [query, setQuery] = useState(''); // State for search query
-    const perPage = 5;
+    const perPage = 10;
 
     const [users, setUsers] = useState<User[]>([]);
     const [totalCount, setTotalCount] = useState(0);
 
     useEffect(() => {
         const fetchData = async () => {
-            const { users, totalCount } = await fetchUsers(query, currentPage + 1, perPage); // Adjust page for backend
-            setUsers(users);
-            setTotalCount(totalCount);
+            try {
+                const { users, totalCount } = await fetchUsers(query, currentPage + 1, perPage); // Adjust page for backend
+                setUsers(users);
+                setTotalCount(Math.min(totalCount, 1000)); // Limit total count to 1000 due to GitHub API limitation
+            } catch (error) {
+                console.error('Error fetching users:', error);
+            }
         };
         fetchData();
     }, [currentPage, query]);
@@ -65,21 +69,23 @@ const UsersPage = () => {
             </div>
 
             {/* Pagination using react-paginate */}
-            <ReactPaginate
-                previousLabel={'Previous'}
-                nextLabel={'Next'}
-                breakLabel={'...'}
-                pageCount={pageCount}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={3}
-                onPageChange={handlePageClick}
-                containerClassName={styles.pagination}
-                pageClassName={styles.paginationButton}
-                activeClassName={styles.active}
-                previousClassName={styles.paginationButton}
-                nextClassName={styles.paginationButton}
-                disabledClassName={styles.disabled}
-            />
+            {pageCount > 1 && (
+                <ReactPaginate
+                    previousLabel={'Previous'}
+                    nextLabel={'Next'}
+                    breakLabel={'...'}
+                    pageCount={pageCount}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={3}
+                    onPageChange={handlePageClick}
+                    containerClassName={styles.pagination}
+                    pageClassName={styles.paginationButton}
+                    activeClassName={styles.active}
+                    previousClassName={styles.paginationButton}
+                    nextClassName={styles.paginationButton}
+                    disabledClassName={styles.disabled}
+                />
+            )}
         </div>
     );
 };
