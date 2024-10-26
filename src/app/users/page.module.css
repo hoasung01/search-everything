@@ -8,12 +8,21 @@
 .searchContainer {
     display: flex;
     margin-bottom: 20px;
+    gap: 10px;
 }
 
 .searchInput {
     flex: 1;
     padding: 10px;
     font-size: 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    outline: none;
+}
+
+.searchInput:focus {
+    border-color: #4caf50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
 }
 
 .searchButton {
@@ -22,6 +31,7 @@
     background-color: #4caf50;
     color: white;
     border: none;
+    border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
@@ -30,23 +40,35 @@
     background-color: #45a045;
 }
 
-/* Users Container Styles */
+/* Users Container */
 .usersContainer {
     display: flex;
     flex-wrap: wrap;
-    justify-content: flex-start;
+    gap: 16px;
     margin-bottom: 20px;
 }
 
 .userIcon {
-    width: 80px;
-    height: 80px;
-    margin: 10px;
+    width: 100px;
+    height: 100px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    text-align: center;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 8px;
+    transition: all 0.2s ease-in-out;
+}
+
+.userIcon:hover {
+    background-color: #f0f9ff;
+    transform: translateY(-2px);
+}
+
+.userIcon.selected {
+    background-color: #e8f5e9;
+    border: 2px solid #4caf50;
 }
 
 .userAvatar {
@@ -54,26 +76,29 @@
     height: 60px;
     border-radius: 50%;
     object-fit: cover;
-    background-color: #ccc;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    color: white;
+    margin-bottom: 8px;
 }
 
 .userName {
-    margin-top: 5px;
     font-size: 14px;
-    word-break: break-all;
+    text-align: center;
+    word-break: break-word;
+    max-width: 90px;
+    color: #2d3748;
 }
 
-/* Repositories Styles */
+/* Repositories Container */
 .repositoriesContainer {
-    padding: 20px;
-    background-color: #f9f9f9;
+    background-color: #fff;
     border-radius: 8px;
+    padding: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.repositoriesContainer h3 {
+    margin: 0 0 20px 0;
+    color: #2d3748;
+    font-size: 1.25rem;
 }
 
 .repositoryList {
@@ -83,37 +108,129 @@
 }
 
 .repositoryItem {
-    padding: 12px;
-    margin-bottom: 10px;
-    background-color: #ffffff;
+    padding: 16px;
     border: 1px solid #e2e8f0;
-    border-radius: 4px;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-.repositoryItem:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
 }
 
 .repositoryItem:hover {
-    background-color: #f1f1f1;
-    transform: translateY(-2px);
+    background-color: #f8fafc;
+    border-color: #4caf50;
+}
+
+.repositoryItem.selectedRepo {
+    background-color: #f0f9ff;
+    border-left: 4px solid #4caf50;
+}
+
+.repositoryHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
 }
 
 .repositoryLink {
-    color: #4299e1;
+    color: #2c5282;
     text-decoration: none;
     font-weight: 500;
+    font-size: 1.1rem;
+}
+
+.repositoryLink:hover {
+    text-decoration: underline;
+}
+
+.repositoryStats {
+    display: flex;
+    gap: 12px;
+    color: #718096;
+    font-size: 0.875rem;
 }
 
 .repositoryDescription {
     color: #718096;
     font-size: 0.875rem;
-    margin-top: 4px;
+    margin: 8px 0 0 0;
 }
 
-/* Pagination Styles */
+/* Issues Container */
+.issuesContainer {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.issuesContainer h4 {
+    margin: 0 0 16px 0;
+    color: #2d3748;
+    font-size: 1.1rem;
+}
+
+.issuesList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.issueItem {
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    background-color: white;
+    transition: transform 0.2s ease-in-out;
+}
+
+.issueItem:hover {
+    transform: translateX(4px);
+}
+
+.issueHeader {
+    margin-bottom: 8px;
+}
+
+.issueLink {
+    color: #2c5282;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.issueLink:hover {
+    text-decoration: underline;
+}
+
+.issueFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.875rem;
+}
+
+.issueDate {
+    color: #718096;
+    font-size: 0.75rem;
+}
+
+/* Loading and Empty States */
+.loading {
+    text-align: center;
+    padding: 20px;
+    color: #718096;
+}
+
+.noIssues {
+    text-align: center;
+    padding: 20px;
+    color: #718096;
+    background-color: #f7fafc;
+    border-radius: 6px;
+}
+
+/* Pagination */
 .paginationWrapper {
     margin: 20px 0;
     display: flex;
@@ -125,30 +242,31 @@
     list-style: none;
     padding: 0;
     margin: 0;
-    gap: 5px;
+    gap: 4px;
 }
 
 .paginationItem {
     margin: 0;
-    padding: 0;
 }
 
 .paginationLink {
     padding: 8px 12px;
     border: 1px solid #e2e8f0;
-    border-radius: 4px;
+    border-radius: 6px;
     color: #4a5568;
     cursor: pointer;
     text-decoration: none;
-    display: block;
-    min-width: 40px;
-    text-align: center;
-    transition: background-color 0.3s, color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    transition: all 0.2s ease;
 }
 
 .paginationLink:hover {
     background-color: #4caf50;
-    color: #ffffff;
+    border-color: #4caf50;
+    color: white;
 }
 
 .paginationActive {
@@ -158,20 +276,80 @@
 
 .paginationActive .paginationLink {
     color: white;
-    border-color: transparent;
 }
 
 .paginationDisabled .paginationLink {
-    background-color: #f2f2f2;
+    background-color: #f7fafc;
     color: #cbd5e0;
     cursor: not-allowed;
-    border-color: #ddd;
+    border-color: #e2e8f0;
 }
 
-.paginationEllipsis {
-    padding: 8px;
-    color: #999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* Responsive Design */
+@media (max-width: 640px) {
+    .container {
+        padding: 16px;
+    }
+
+    .searchContainer {
+        flex-direction: column;
+    }
+
+    .repositoryHeader {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .repositoryStats {
+        flex-wrap: wrap;
+    }
+
+    .issueFooter {
+        flex-direction: column;
+        gap: 4px;
+        align-items: flex-start;
+    }
+
+    .paginationLink {
+        padding: 6px 10px;
+        min-width: 28px;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.issuesContainer {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* State Colors */
+.issueState {
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.issueState.open {
+    background-color: #e6ffed;
+    color: #22863a;
+    border: 1px solid #34d058;
+}
+
+.issueState.closed {
+    background-color: #ffeef0;
+    color: #cb2431;
+    border: 1px solid #d73a49;
 }
