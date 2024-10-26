@@ -1,12 +1,11 @@
 'use client';
-
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import ReactPaginate from 'react-paginate';
 import styles from './page.module.css';
 import { User } from './types';
 import { fetchUsers } from './fetchUsers';
+import IssueModal from '../../components/IssueModal';
 import axios from 'axios';
-
 interface Issue {
     id: number;
     title: string;
@@ -16,11 +15,19 @@ interface Issue {
     number: number;
 }
 
+// Create authenticated axios instance
+const githubApi = axios.create({
+    baseURL: 'https://api.github.com',
+    headers: {
+        'Authorization': `token ${process.env.NEXT_PUBLIC_GITHUB_TOKEN}`,
+        'Accept': 'application/vnd.github.v3+json'
+    }
+});
+
 const UsersPage = () => {
     const [currentPage, setCurrentPage] = useState(0);
     const [query, setQuery] = useState('');
     const perPage = 10;
-
     const [users, setUsers] = useState<User[]>([]);
     const [totalCount, setTotalCount] = useState(0);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -32,10 +39,14 @@ const UsersPage = () => {
     const [isLoadingIssues, setIsLoadingIssues] = useState(false);
     const [issuesPage, setIssuesPage] = useState(0);
     const [totalIssues, setTotalIssues] = useState(0);
-
+    // New states for modal
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [newIssueTitle, setNewIssueTitle] = useState('');
+    const [newIssueBody, setNewIssueBody] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState<string | null>(null);
     const reposPerPage = 5;
     const issuesPerPage = 5;
-
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -48,15 +59,13 @@ const UsersPage = () => {
         };
         fetchData();
     }, [currentPage, query]);
-
     useEffect(() => {
         const fetchRepositories = async () => {
             if (selectedUser) {
                 try {
-                    const userResponse = await axios.get(`https://api.github.com/users/${selectedUser.login}`);
+                    const userResponse = await githubApi.get(`/users/${selectedUser.login}`);
                     setTotalRepos(userResponse.data.public_repos);
-
-                    const reposResponse = await axios.get(`https://api.github.com/users/${selectedUser.login}/repos`, {
+                    const reposResponse = await githubApi.get(`/users/${selectedUser.login}/repos`, {
                         params: {
                             page: reposPage + 1,
                             per_page: reposPerPage,
@@ -71,53 +80,44 @@ const UsersPage = () => {
         fetchRepositories();
     }, [selectedUser, reposPage]);
 
-    useEffect(() => {
-        const fetchIssues = async () => {
-            if (selectedUser && selectedRepo) {
-                setIsLoadingIssues(true);
-                try {
-                    const response = await axios.get(
-                        `https://api.github.com/repos/${selectedUser.login}/${selectedRepo}/issues`,
-                        {
-                            params: {
-                                state: 'open',
-                                page: issuesPage + 1,
-                                per_page: issuesPerPage,
-                            }
+    const fetchIssues = useCallback(async () => {
+        if (selectedUser && selectedRepo) {
+            setIsLoadingIssues(true);
+            try {
+                const response = await githubApi.get(
+                    `/repos/${selectedUser.login}/${selectedRepo}/issues`,
+                    {
+                        params: {
+                            state: 'open',
+                            page: issuesPage + 1,
+                            per_page: issuesPerPage,
                         }
-                    );
-                    
-                    // Get total count from API response headers
-                    const linkHeader = response.headers.link;
-                    const totalCount = linkHeader 
-                        ? parseInt(linkHeader.match(/page=(\d+)>; rel="last"/)?.[1] || '1')
-                        : Math.ceil(response.data.length / issuesPerPage);
-                    
-                    setIssues(response.data);
-                    setTotalIssues(totalCount * issuesPerPage);
-                } catch (error) {
-                    console.error('Error fetching issues:', error);
-                    setIssues([]);
-                } finally {
-                    setIsLoadingIssues(false);
-                }
-            }
-        };
-        fetchIssues();
-    }, [selectedUser, selectedRepo, issuesPage]);
+                    }
+                );
+                const linkHeader = response.headers.link;
+                const totalCount = linkHeader
+                    ? parseInt(linkHeader.match(/page=(\d+)>; rel="last"/)?.[1] || '1')
+                    : Math.ceil(response.data.length / issuesPerPage);
 
+                setIssues(response.data);
+                setTotalIssues(totalCount * issuesPerPage);
+            } catch (error) {
+                console.error('Error fetching issues:', error);
+                setIssues([]);
+            } finally {
+                setIsLoadingIssues(false);
+            }
+        }
+    }, [selectedUser, selectedRepo, issuesPage, issuesPerPage]);
     const handlePageClick = (selectedItem: { selected: number }) => {
         setCurrentPage(selectedItem.selected);
     };
-
     const handleReposPageClick = (selectedItem: { selected: number }) => {
         setReposPage(selectedItem.selected);
     };
-
     const handleIssuesPageClick = (selectedItem: { selected: number }) => {
         setIssuesPage(selectedItem.selected);
     };
-
     const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
@@ -125,27 +125,41 @@ const UsersPage = () => {
         setQuery(searchQuery);
         setCurrentPage(0);
     };
-
     const handleUserClick = (user: User) => {
         setSelectedUser(user);
         setReposPage(0);
         setSelectedRepo(null);
         setIssues([]);
     };
-
     const handleRepoClick = (repoName: string) => {
         setSelectedRepo(selectedRepo === repoName ? null : repoName);
         setIssuesPage(0);
     };
+    const handleCreateIssue = async (title: string, body: string) => {
+        if (!selectedUser || !selectedRepo) return;
+        setIsSubmitting(true);
+        setError(null);
 
+        try {
+            await githubApi.post(
+                `/repos/${selectedUser.login}/${selectedRepo}/issues`,
+                { title, body }
+            );
+            setIsModalOpen(false);
+            await fetchIssues(); // Refresh issues list
+        } catch (error) {
+            setError('Failed to create issue. Please try again.');
+            console.error('Error creating issue:', error);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString();
     };
-
     const pageCount = Math.ceil(totalCount / perPage);
     const reposPageCount = Math.ceil(totalRepos / reposPerPage);
     const issuesPageCount = Math.ceil(totalIssues / issuesPerPage);
-
     return (
         <div className={styles.container}>
             <form className={styles.searchContainer} onSubmit={handleSearchSubmit}>
@@ -159,7 +173,6 @@ const UsersPage = () => {
                     Search
                 </button>
             </form>
-
             <div className={styles.usersContainer}>
                 {users.map((user: User) => (
                     <div
@@ -176,7 +189,6 @@ const UsersPage = () => {
                     </div>
                 ))}
             </div>
-
             {selectedUser && (
                 <div className={styles.repositoriesContainer}>
                     <h3>Repositories for {selectedUser.login}</h3>
@@ -184,8 +196,8 @@ const UsersPage = () => {
                         <>
                             <ul className={styles.repositoryList}>
                                 {repositories.map((repo: any) => (
-                                    <li 
-                                        key={repo.id} 
+                                    <li
+                                        key={repo.id}
                                         className={`${styles.repositoryItem} ${selectedRepo === repo.name ? styles.selectedRepo : ''}`}
                                         onClick={() => handleRepoClick(repo.name)}
                                     >
@@ -200,7 +212,7 @@ const UsersPage = () => {
                                                 {repo.name}
                                             </a>
                                             <span className={styles.repositoryStats}>
-                                                ⭐ {repo.stargazers_count} • 🔄 {repo.forks_count} • 
+                                                ⭐ {repo.stargazers_count} • 🔄 {repo.forks_count} •
                                                 📝 {repo.open_issues_count} issues
                                             </span>
                                         </div>
@@ -211,7 +223,21 @@ const UsersPage = () => {
                                         )}
                                         {selectedRepo === repo.name && (
                                             <div className={styles.issuesContainer}>
-                                                <h4>Open Issues</h4>
+                                                <h4 className={styles.openIssuesHeading}>Open Issues</h4>
+                                                <button
+                                                    className={styles.newIssueButton}
+                                                    onClick={() => setIsModalOpen(true)}
+                                                >
+                                                    New Issue
+                                                </button>
+                                                <IssueModal
+                                                    isOpen={isModalOpen}
+                                                    onClose={() => setIsModalOpen(false)}
+                                                    onSubmit={handleCreateIssue}
+                                                    repoName={selectedRepo || ''}
+                                                    isSubmitting={isSubmitting}
+                                                    error={error}
+                                                />
                                                 {isLoadingIssues ? (
                                                     <p className={styles.loading}>Loading issues...</p>
                                                 ) : issues.length > 0 ? (
@@ -302,7 +328,6 @@ const UsersPage = () => {
                     )}
                 </div>
             )}
-
             {pageCount > 1 && (
                 <div className={styles.paginationWrapper}>
                     <ReactPaginate
@@ -331,5 +356,4 @@ const UsersPage = () => {
         </div>
     );
 };
-
 export default UsersPage;
