@@ -1,4 +1,6 @@
-/* Modal Overlay */
+/* Your existing styles */
+
+/* Modal Styles */
 .modalOverlay {
     position: fixed;
     top: 0;
@@ -22,7 +24,6 @@
     visibility: visible;
 }
 
-/* Modal Content */
 .modalContent {
     background: white;
     width: 90%;
@@ -43,7 +44,6 @@
     opacity: 1;
 }
 
-/* Modal Header */
 .modalHeader {
     display: flex;
     justify-content: space-between;
@@ -82,7 +82,6 @@
     transform: rotate(90deg);
 }
 
-/* Form Groups */
 .formGroup {
     margin-bottom: 20px;
 }
@@ -95,7 +94,6 @@
     font-size: 0.95rem;
 }
 
-/* Form Inputs */
 .input, .textarea {
     width: 100%;
     padding: 12px;
@@ -104,13 +102,11 @@
     font-size: 1rem;
     transition: all 0.2s ease;
     background-color: #f8fafc;
-    color: black; /* Ensure text color is black */
 }
 
 .input:hover, .textarea:hover {
     border-color: #cbd5e0;
     background-color: white;
-    color: black; /* Keep text color black on hover */
 }
 
 .input:focus, .textarea:focus {
@@ -118,10 +114,15 @@
     border-color: #4caf50;
     background-color: white;
     box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
-    color: black; /* Keep text color black on focus */
 }
 
-/* Modal Footer */
+.textarea {
+    min-height: 120px;
+    resize: vertical;
+    font-family: inherit;
+    line-height: 1.5;
+}
+
 .modalFooter {
     display: flex;
     justify-content: flex-end;
@@ -131,7 +132,6 @@
     border-top: 1px solid #e2e8f0;
 }
 
-/* Buttons */
 .submitButton, .cancelButton {
     padding: 10px 20px;
     border-radius: 8px;
@@ -154,7 +154,6 @@
 .submitButton:hover:not(:disabled) {
     background-color: #43a047;
     transform: translateY(-1px);
-    box-shadow: 0 4px 6px rgba(76, 175, 80, 0.2);
 }
 
 .submitButton:active:not(:disabled) {
@@ -182,7 +181,6 @@
     cursor: not-allowed;
 }
 
-/* Loading Spinner */
 .loadingSpinner {
     width: 16px;
     height: 16px;
@@ -196,7 +194,6 @@
     to { transform: rotate(360deg); }
 }
 
-/* Error Message */
 .error {
     background-color: #fff5f5;
     color: #c53030;
@@ -212,25 +209,6 @@
 .error::before {
     content: "⚠️";
     margin-right: 8px;
-}
-
-/* Custom Scrollbar */
-.modalContent {
-    scrollbar-width: thin;
-    scrollbar-color: #cbd5e0 #f7fafc;
-}
-
-.modalContent::-webkit-scrollbar {
-    width: 8px;
-}
-
-.modalContent::-webkit-scrollbar-track {
-    background: #f7fafc;
-}
-
-.modalContent::-webkit-scrollbar-thumb {
-    background-color: #cbd5e0;
-    border-radius: 4px;
 }
 
 /* Responsive Design */
@@ -255,60 +233,6 @@
     }
 
     .input, .textarea {
-        font-size: 16px; /* Prevents zoom on mobile */
-    }
-}
-
-/* Heading for Open Issues */
-.openIssuesHeading {
-    font-size: 1.25rem;
-    color: #2d3748;
-    font-weight: 600;
-    margin: 0;
-    display: inline-block;
-    margin-right: 16px; /* Creates space between heading and button */
-}
-
-/* New Issue Button */
-.newIssueButton {
-    padding: 8px 16px;
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 500;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.newIssueButton:hover {
-    background-color: #43a047;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.newIssueButton:active {
-    transform: translateY(0);
-}
-
-/* Optional: Add a subtle icon to the button */
-.newIssueButton::before {
-    content: '➕'; /* Emoji icon for a quick icon */
-    font-size: 1rem;
-}
-
-/* For better alignment on small screens */
-@media (max-width: 640px) {
-    .openIssuesHeading {
-        font-size: 1.1rem;
-    }
-
-    .newIssueButton {
-        font-size: 0.85rem;
-        padding: 6px 14px;
+        font-size: 16px;
     }
 }
