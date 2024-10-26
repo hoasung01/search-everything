@@ -45,8 +45,6 @@ const UsersPage = () => {
     const [totalIssues, setTotalIssues] = useState(0);
     // New states for modal
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [newIssueTitle, setNewIssueTitle] = useState('');
-    const [newIssueBody, setNewIssueBody] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | undefined>(undefined);
     const reposPerPage = 5;
@@ -189,9 +187,9 @@ const UsersPage = () => {
                     issuesPageCount={issuesPageCount}
                     issuesPage={issuesPage}
                     onIssuesPageChange={handleIssuesPageClick}
-                    onReposPageChange={handleReposPageClick} // Ensure this is passed correctly
-                    reposPageCount={reposPageCount}          // Ensure this is passed correctly
-                    reposPage={reposPage}                    // Ensure this is passed correctly
+                    onReposPageChange={handleReposPageClick}
+                    reposPageCount={reposPageCount}
+                    reposPage={reposPage}
                     openIssuesModal={() => setIsModalOpen(true)}
                     renderIssueModal={
                         <IssueModal
