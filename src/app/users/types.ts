@@ -23,4 +23,5 @@ export interface Repository {
     stargazers_count: number;
     language: string | null;
     open_issues_count: number;
+    forks_count: number;
 }

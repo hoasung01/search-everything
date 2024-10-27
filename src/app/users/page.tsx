@@ -1,16 +1,14 @@
 'use client';
 import React, {useState, useCallback} from 'react';
 import styles from './page.module.css';
-import { User } from './types';
 import IssueModal from '../../components/IssueModal';
 import Pagination from '../../components/Pagination';
 import UserList from './components/UserList';
 import RepositoryList from './components/RepositoryList';
-import { useUsers } from '../hooks/useUsers';
-import { useRepositories } from '../hooks/useRepositories';
 import SearchBar from './components/SearchBar';
 import { useSearch } from '../hooks/useSearch';
-
+import { useUsers } from '../hooks/useUsers';
+import { useRepositories } from '../hooks/useRepositories';
 
 import axios from 'axios';
 interface Issue {
@@ -32,13 +30,20 @@ const githubApi = axios.create({
 });
 
 const UsersPage = () => {
+    const { query, handleSearchSubmit } = useSearch();
+    const { users, totalCount, currentPage, setCurrentPage } = useUsers(query);
     const {
-        query,
-        handleSearchSubmit,
-    } = useSearch();
+        selectedUser,
+        selectedRepo,
+        repositories,
+        reposPage,
+        reposPageCount,
+        handleUserClick,
+        handleRepoClick,
+        handleReposPageChange
+    } = useRepositories();
 
     const perPage = 10;
-    const [selectedRepo, setSelectedRepo] = useState<string | null>(null);
     const [issues, setIssues] = useState<Issue[]>([]);
     const [isLoadingIssues, setIsLoadingIssues] = useState(false);
     const [issuesPage, setIssuesPage] = useState(0);
@@ -48,9 +53,6 @@ const UsersPage = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | undefined>(undefined);
     const issuesPerPage = 5;
-    const { users, totalCount, currentPage, setCurrentPage } = useUsers(query);
-    const [selectedUser, setSelectedUser] = useState<User | null>(null);
-    const { repositories, reposPage, setReposPage, reposPageCount } = useRepositories(selectedUser);
     const fetchIssues = useCallback(async () => {
         if (selectedUser && selectedRepo) {
             setIsLoadingIssues(true);
@@ -83,22 +85,8 @@ const UsersPage = () => {
     const handlePageClick = (selectedItem: { selected: number }) => {
         setCurrentPage(selectedItem.selected);
     };
-    const handleReposPageClick = (selectedItem: { selected: number }) => {
-        setReposPage(selectedItem.selected);
-    };
     const handleIssuesPageClick = (selectedItem: { selected: number }) => {
         setIssuesPage(selectedItem.selected);
-    };
-
-    const handleUserClick = (user: User) => {
-        setSelectedUser(user);
-        setReposPage(0);
-        setSelectedRepo(null);
-        setIssues([]);
-    };
-    const handleRepoClick = (repoName: string) => {
-        setSelectedRepo(selectedRepo === repoName ? null : repoName);
-        setIssuesPage(0);
     };
     const handleCreateIssue = async (title: string, body: string) => {
         if (!selectedUser || !selectedRepo) return;
@@ -139,7 +127,7 @@ const UsersPage = () => {
                     issuesPageCount={issuesPageCount}
                     issuesPage={issuesPage}
                     onIssuesPageChange={handleIssuesPageClick}
-                    onReposPageChange={handleReposPageClick}
+                    onReposPageChange={handleReposPageChange}
                     reposPageCount={reposPageCount}
                     reposPage={reposPage}
                     openIssuesModal={() => setIsModalOpen(true)}

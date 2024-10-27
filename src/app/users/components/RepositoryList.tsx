@@ -1,16 +1,7 @@
 import React from 'react';
 import styles from './RepositoryList.module.css';
 import Pagination from '../../../components/Pagination';
-
-interface Repository {
-    id: number;
-    name: string;
-    html_url: string;
-    description: string;
-    stargazers_count: number;
-    forks_count: number;
-    open_issues_count: number;
-}
+import {Repository} from "@/app/users/types";
 
 interface RepositoryListProps {
     repositories: Repository[];
