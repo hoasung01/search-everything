@@ -29,7 +29,6 @@ const UsersPage = () => {
         issues,
         isLoadingIssues,
         issuesPage,
-        totalIssues,
         issuesPageCount,
         isModalOpen,
         setIsModalOpen,
