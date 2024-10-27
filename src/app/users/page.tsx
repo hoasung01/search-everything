@@ -1,5 +1,4 @@
 'use client';
-import React, {useState, useCallback} from 'react';
 import styles from './page.module.css';
 import IssueModal from '../../components/IssueModal';
 import Pagination from '../../components/Pagination';
@@ -10,25 +9,6 @@ import { useSearch } from '../hooks/useSearch';
 import { useUsers } from '../hooks/useUsers';
 import { useRepositories } from '../hooks/useRepositories';
 import { useRepoIssues } from '../hooks/useRepoIssues';
-
-import axios from 'axios';
-interface Issue {
-    id: number;
-    title: string;
-    html_url: string;
-    state: string;
-    created_at: string;
-    number: number;
-}
-
-// Create authenticated axios instance
-const githubApi = axios.create({
-    baseURL: 'https://api.github.com',
-    headers: {
-        'Authorization': `token ${process.env.NEXT_PUBLIC_GITHUB_TOKEN}`,
-        'Accept': 'application/vnd.github.v3+json'
-    }
-});
 
 const UsersPage = () => {
     const { query, handleSearchSubmit } = useSearch();
