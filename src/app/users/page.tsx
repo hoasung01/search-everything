@@ -8,6 +8,9 @@ import UserList from './components/UserList';
 import RepositoryList from './components/RepositoryList';
 import { useUsers } from '../hooks/useUsers';
 import { useRepositories } from '../hooks/useRepositories';
+import SearchBar from './components/SearchBar';
+import { useSearch } from '../hooks/useSearch';
+
 
 import axios from 'axios';
 interface Issue {
@@ -29,7 +32,11 @@ const githubApi = axios.create({
 });
 
 const UsersPage = () => {
-    const [query, setQuery] = useState('');
+    const {
+        query,
+        handleSearchSubmit,
+    } = useSearch();
+
     const perPage = 10;
     const [selectedRepo, setSelectedRepo] = useState<string | null>(null);
     const [issues, setIssues] = useState<Issue[]>([]);
@@ -82,13 +89,7 @@ const UsersPage = () => {
     const handleIssuesPageClick = (selectedItem: { selected: number }) => {
         setIssuesPage(selectedItem.selected);
     };
-    const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const formData = new FormData(event.currentTarget);
-        const searchQuery = formData.get('query') as string;
-        setQuery(searchQuery);
-        setCurrentPage(0);
-    };
+
     const handleUserClick = (user: User) => {
         setSelectedUser(user);
         setReposPage(0);
@@ -125,17 +126,7 @@ const UsersPage = () => {
     const issuesPageCount = Math.ceil(totalIssues / issuesPerPage);
     return (
         <div className={styles.container}>
-            <form className={styles.searchContainer} onSubmit={handleSearchSubmit}>
-                <input
-                    type="text"
-                    name="query"
-                    placeholder="Search Users..."
-                    className={styles.searchInput}
-                />
-                <button type="submit" className={styles.searchButton}>
-                    Search
-                </button>
-            </form>
+            <SearchBar onSubmit={handleSearchSubmit} />
             <UserList users={users} selectedUser={selectedUser} onUserClick={handleUserClick} />
             {selectedUser && (
                 <RepositoryList
