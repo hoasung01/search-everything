@@ -21,7 +21,8 @@ const UsersPage = () => {
         reposPageCount,
         handleUserClick,
         handleRepoClick,
-        handleReposPageChange
+        handleReposPageChange,
+        formatDate
     } = useRepositories();
     const {
         issues,
@@ -44,9 +45,7 @@ const UsersPage = () => {
     const handlePageClick = (selectedItem: { selected: number }) => {
         setCurrentPage(selectedItem.selected);
     };
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString();
-    };
+   
     const perPage = 10;
     const pageCount = Math.ceil(totalCount / perPage);
 

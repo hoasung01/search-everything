@@ -15,6 +15,7 @@ interface UseRepositoryProps {
     handleRepoClick: (repoName: string) => void;
     setReposPage: (page: number) => void;
     handleReposPageChange: (selectedItem: { selected: number }) => void;
+    formatDate: (dateString: string) => string;
 }
 
 export const useRepositories = (reposPerPage: number = 5): UseRepositoryProps => {
@@ -86,6 +87,10 @@ export const useRepositories = (reposPerPage: number = 5): UseRepositoryProps =>
         setReposPage(selectedItem.selected);
     };
 
+    const formatDate = (dateString: string) => {
+        return new Date(dateString).toLocaleDateString();
+    };
+
     return {
         selectedUser,
         selectedRepo,
@@ -98,6 +103,7 @@ export const useRepositories = (reposPerPage: number = 5): UseRepositoryProps =>
         handleUserClick,
         handleRepoClick,
         setReposPage,
-        handleReposPageChange
+        handleReposPageChange,
+        formatDate
     };
 };
