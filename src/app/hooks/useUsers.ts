@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { fetchUsers } from '../users/fetchUsers';
+import { searchUsers } from '../api/githubApi';
 import {User} from "@/app/users/types";
 
 export const useUsers = (query: string) => {
@@ -9,7 +9,7 @@ export const useUsers = (query: string) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const { users, totalCount } = await fetchUsers(query, currentPage + 1, 10);
+            const { users, totalCount } = await searchUsers(query, currentPage + 1, 10);
             setUsers(users);
             setTotalCount(Math.min(totalCount, 1000));
         };

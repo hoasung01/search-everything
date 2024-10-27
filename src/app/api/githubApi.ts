@@ -34,3 +34,22 @@ export const createGithubIssue = async (
         body
     });
 };
+
+export const searchUsers = async (
+    query: string,
+    page = 1,
+    perPage = 10
+) => {
+    if (query.trim() !== '') {
+        const response = await githubApi.get('/search/users', {
+            params: {
+                q: query,
+                page,
+                per_page: perPage,
+            },
+        });
+        return { users: response.data.items, totalCount: response.data.total_count };
+    } else {
+        return { users: [], totalCount: 0 };
+    }
+};
