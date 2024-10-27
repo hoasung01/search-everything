@@ -9,6 +9,7 @@ import { useSearch } from '../hooks/useSearch';
 import { useUsers } from '../hooks/useUsers';
 import { useRepositories } from '../hooks/useRepositories';
 import { useRepoIssues } from '../hooks/useRepoIssues';
+import { usePagination } from '@/app/hooks/usePagination';
 
 const UsersPage = () => {
     const { query, handleSearchSubmit } = useSearch();
@@ -42,12 +43,15 @@ const UsersPage = () => {
         issuesPerPage: 5
     });
 
-    const handlePageClick = (selectedItem: { selected: number }) => {
-        setCurrentPage(selectedItem.selected);
-    };
-   
-    const perPage = 10;
-    const pageCount = Math.ceil(totalCount / perPage);
+    const {
+        pageCount,
+        handlePageClick,
+    } = usePagination({
+        totalCount,
+        perPage: 10,
+        currentPage,
+        onPageChange: setCurrentPage
+    });
 
     return (
         <div className={styles.container}>
